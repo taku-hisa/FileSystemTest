@@ -11,10 +11,11 @@ import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.example.filesystemtest.databinding.FragmentMainBinding
 
+private val category = arrayOf("A","B","C","D","E")
+
 class MainFragment : Fragment() {
     private var _binding : FragmentMainBinding? = null
     private val binding get() = _binding!!
-    private val READ_REQUEST_CODE: Int = 42
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +32,6 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //カテゴリーをリスト表示する
-        val category = listOf("A","B","C","D","E")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, category)
         binding.categoryList.adapter = adapter
         binding.categoryList.setOnItemClickListener{parent,view,position,id->

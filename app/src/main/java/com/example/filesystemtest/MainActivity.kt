@@ -1,5 +1,7 @@
 package com.example.filesystemtest
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
@@ -9,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import com.example.filesystemtest.database.item
 import com.example.filesystemtest.databinding.ActivityMainBinding
 import io.realm.Realm
@@ -18,9 +21,11 @@ import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
+private val category = arrayOf("A","B","C","D","E") //カテゴリを定義
+private var CATEGORY_CODE: Int = 42                 //カテゴリの変数
+
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private val READ_REQUEST_CODE: Int = 42
+    private lateinit var binding: ActivityMainBinding   //ビューバインディング
     private lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,17 +33,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //ボタンが押されたらギャラリーを開く
+        //ギャラリーを開く
         binding.button.setOnClickListener {
-            val intent = Intent()
-            intent.type = "image/*"
-            intent.action = Intent.ACTION_OPEN_DOCUMENT
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            this.startActivityForResult(
-                Intent.createChooser(intent, "Choose Photo"),
-                READ_REQUEST_CODE
-            )
+
+            AlertDialog.Builder(this).apply {
+                setTitle("フォルダ選択")
+                setSingleChoiceItems(category, -1) { _, i ->
+                    CATEGORY_CODE = i  // 選択した項目を保持
+                }
+                setPositiveButton("OK") { _, _ ->
+                    if(CATEGORY_CODE < category.size + 1) {
+                        intent()
+                    }
+                }
+                setNegativeButton("Cancel", null)
+            }.show()
         }
+    }
+
+    private fun intent() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_OPEN_DOCUMENT
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        this.startActivityForResult(Intent.createChooser(intent, "Choose Photo"), CATEGORY_CODE)
     }
 
     //写真が選択された後の動き
@@ -48,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         when (requestCode) {
-            READ_REQUEST_CODE -> {
+            CATEGORY_CODE -> {
                 try {
                     val uri = resultData?.data
                     if (uri != null) {
@@ -68,7 +86,6 @@ class MainActivity : AppCompatActivity() {
                             saveImage(image,i)
                         }
                     }
-                    Toast.makeText(this, "登録しました", Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
                     //Toast.makeText(this, "エラーが発生しました", Toast.LENGTH_LONG).show()
                 }
@@ -85,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
         outStream.write(byteArrOutputStream.toByteArray())
         realm = Realm.getDefaultInstance() //realmのオープン処理
-        createDatabase(name)               //DB登録処理
+        createDatabase(name)  //DB登録処理
         realm.close()                      //realmのクローズ処理
         outStream.close()
     }
@@ -95,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             val maxId = db.where<item>().max("id")
             val nextId : Long = (maxId?.toLong() ?: 0L) + 1L
             val item = db.createObject<item>(nextId)
-            item.category = "A"
+            item.category = category[CATEGORY_CODE]
             item.name = name
             item.detail = ""
         }

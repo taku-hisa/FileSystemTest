@@ -43,12 +43,14 @@ class ItemFragment : Fragment() {
         val items = realm.where<item>().equalTo("category",category).findAll()
         val adapter = itemAdapter(items)
         binding.RecyclerView.adapter = adapter
-        //画像を選ぶ
-        binding.RecyclerView.setOnClickListener {
+
+        //リサイクラービューの選択
+        /*binding.RecyclerView.setOnClickListener {
             val item = (view.findViewById<TextView>(android.R.id.text2)).text.toString()
             val action = ItemFragmentDirections.actionItemFragmentToImageFragment(item)
             findNavController().navigate(action)
-        }
+        }*/
+
     }
 
     override fun onDestroyView() {
