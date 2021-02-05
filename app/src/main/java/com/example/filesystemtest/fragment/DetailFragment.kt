@@ -38,6 +38,7 @@ class DetailFragment : Fragment() {
         val name = args.name
         val bufferedInputStream = BufferedInputStream(context?.openFileInput(name))
         val image = BitmapFactory.decodeStream(bufferedInputStream)
+        bufferedInputStream.close()
         binding.imageView.setImageBitmap(image)
     }
 

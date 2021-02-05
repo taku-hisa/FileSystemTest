@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
                         //一枚選択時の動作
                         val inputStream = contentResolver?.openInputStream(uri)
                         val image = BitmapFactory.decodeStream(inputStream)
+                        if (inputStream != null) inputStream.close()
                         saveImage(image,999)
                     } else {
                         //複数枚選択時の動作
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                             val itemUri: Uri = item.uri
                             val inputStream = contentResolver?.openInputStream(itemUri)
                             val image = BitmapFactory.decodeStream(inputStream)
+                            if (inputStream != null) inputStream.close()
                             saveImage(image,i)
                         }
                     }

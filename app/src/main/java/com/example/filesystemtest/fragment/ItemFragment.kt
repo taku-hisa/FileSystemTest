@@ -50,6 +50,7 @@ class ItemFragment : Fragment() {
         for(i in items){
             val bufferedInputStream = BufferedInputStream(context?.openFileInput(i.name))
             val itemImage = BitmapFactory.decodeStream(bufferedInputStream)
+            bufferedInputStream.close()
             imageList.add(itemImage)
         }
         //アルゴリズムの修正が必要
