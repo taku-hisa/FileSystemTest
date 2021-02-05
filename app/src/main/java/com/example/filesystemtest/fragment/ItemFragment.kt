@@ -1,19 +1,22 @@
 package com.example.filesystemtest.fragment
 
+import android.R
+import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.filesystemtest.database.item
 import com.example.filesystemtest.database.itemAdapter
 import com.example.filesystemtest.databinding.FragmentItemBinding
 import io.realm.Realm
 import io.realm.kotlin.where
+import java.io.*
 
 
 class ItemFragment : Fragment() {
@@ -31,7 +34,7 @@ class ItemFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentItemBinding.inflate(inflater,container,false)
+        _binding = FragmentItemBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -39,10 +42,25 @@ class ItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //選んだカテゴリの画像リストを表示する
         val category = args.category
-        binding.RecyclerView.layoutManager = LinearLayoutManager(context)
-        val items = realm.where<item>().equalTo("category",category).findAll()
-        val adapter = itemAdapter(items)
-        binding.RecyclerView.adapter = adapter
+        val items = realm.where<item>().equalTo("category", category).findAll()
+        //画像の読込
+        val imageList = mutableListOf<Bitmap>()
+        for(i in items){
+            val bufferedInputStream = BufferedInputStream(context?.openFileInput(i.name))
+            val itemImage = BitmapFactory.decodeStream(bufferedInputStream)
+            imageList.add(itemImage)
+        }
+        binding.RecyclerView.apply {
+            layoutManager =
+                when {
+                    resources.configuration.orientation
+                            == Configuration.ORIENTATION_PORTRAIT
+                    ->GridLayoutManager(requireContext(),2)
+                    else
+                    ->GridLayoutManager(requireContext(),4)
+                }
+            adapter = itemAdapter(context,imageList)
+        }
 
         //リサイクラービューの選択
         /*binding.RecyclerView.setOnClickListener {

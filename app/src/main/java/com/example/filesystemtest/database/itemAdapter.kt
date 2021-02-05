@@ -1,38 +1,35 @@
 package com.example.filesystemtest.database
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import io.realm.OrderedRealmCollection
-import io.realm.RealmRecyclerViewAdapter
+import com.example.filesystemtest.R
 
+class itemAdapter(
+    private val context: Context,
+    private val images : List<Bitmap> //引数として受け取ったリスト
+):RecyclerView.Adapter<itemAdapter.ViewHolder>(){
 
-class itemAdapter(data: OrderedRealmCollection<item>):
-    RealmRecyclerViewAdapter<item, itemAdapter.ViewHolder>(data,true) {
-
-    init{
-        setHasStableIds(true)
-    }
-
-    class ViewHolder(cell: View): RecyclerView.ViewHolder(cell) {
-        val date: TextView = cell.findViewById(android.R.id.text1)
-        val title:TextView = cell.findViewById(android.R.id.text2)
+    class ViewHolder(view: View):RecyclerView.ViewHolder(view) {
+        val image: ImageView = view.findViewById(R.id.image) //表示したい部品
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): itemAdapter.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(android.R.layout.simple_expandable_list_item_2,parent,false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_layout,parent,false)
         return ViewHolder(view)
     }
 
+
     override fun onBindViewHolder(holder: itemAdapter.ViewHolder, position: Int) {
-        val item: item? = getItem(position)
-        holder.date.text = ""
-        holder.title.text = item?.name
+        var imageResource = images[position] //リストを展開
+        holder.image.setImageBitmap(imageResource)
     }
-    override fun getItemId(position: Int): Long {
-        return getItem(position)?.id ?: 0
-    }
+
+    override fun getItemCount(): Int = images.size
+
 }

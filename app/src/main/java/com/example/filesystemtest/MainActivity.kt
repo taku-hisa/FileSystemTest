@@ -32,13 +32,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        realm = Realm.getDefaultInstance() //realmのオープン処理
 
         //ギャラリーを開く
         binding.button.setOnClickListener {
-
+            CATEGORY_CODE = 0 //初期選択="A"
             AlertDialog.Builder(this).apply {
                 setTitle("フォルダ選択")
-                setSingleChoiceItems(category, -1) { _, i ->
+                setSingleChoiceItems(category, 0) { _, i -> //初期選択="A"
                     CATEGORY_CODE = i  // 選択した項目を保持
                 }
                 setPositiveButton("OK") { _, _ ->
@@ -101,9 +102,7 @@ class MainActivity : AppCompatActivity() {
         val outStream = openFileOutput(name, Context.MODE_PRIVATE)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
         outStream.write(byteArrOutputStream.toByteArray())
-        realm = Realm.getDefaultInstance() //realmのオープン処理
         createDatabase(name)  //DB登録処理
-        realm.close()                      //realmのクローズ処理
         outStream.close()
     }
 
@@ -116,5 +115,10 @@ class MainActivity : AppCompatActivity() {
             item.name = name
             item.detail = ""
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()                      //realmのクローズ処理
     }
 }
