@@ -25,20 +25,5 @@
         <argument
             android:name="category"
             app:argType="string" />
-        <action
-            android:id="@+id/action_itemFragment_to_imageFragment"
-            app:destination="@id/imageFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/imageFragment"
-        android:name="com.example.filesystemtest.fragment.ImageFragment"
-        android:label="fragment_image"
-        tools:layout="@layout/fragment_image" >
-        <action
-            android:id="@+id/action_imageFragment_to_itemFragment"
-            app:destination="@id/itemFragment" />
-        <argument
-            android:name="image"
-            app:argType="string" />
     </fragment>
 </navigation>

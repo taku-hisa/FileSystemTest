@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.filesystemtest.database.item
@@ -50,6 +51,7 @@ class ItemFragment : Fragment() {
             val itemImage = BitmapFactory.decodeStream(bufferedInputStream)
             imageList.add(itemImage)
         }
+        //アルゴリズムの修正が必要
         binding.RecyclerView.apply {
             layoutManager =
                 when {
@@ -63,11 +65,6 @@ class ItemFragment : Fragment() {
         }
 
         //リサイクラービューの選択
-        /*binding.RecyclerView.setOnClickListener {
-            val item = (view.findViewById<TextView>(android.R.id.text2)).text.toString()
-            val action = ItemFragmentDirections.actionItemFragmentToImageFragment(item)
-            findNavController().navigate(action)
-        }*/
 
     }
 

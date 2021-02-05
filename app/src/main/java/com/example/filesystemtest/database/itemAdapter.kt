@@ -14,6 +14,12 @@ class itemAdapter(
     private val images : List<Bitmap> //引数として受け取ったリスト
 ):RecyclerView.Adapter<itemAdapter.ViewHolder>(){
 
+    //クリック処理を追加
+    private  var listener: ((Int) -> Unit)? = null
+    fun setOnItemClickListener(listener:(Int) -> Unit){
+        this.listener = listener
+    }
+
     class ViewHolder(view: View):RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.image) //表示したい部品
     }
@@ -28,6 +34,9 @@ class itemAdapter(
     override fun onBindViewHolder(holder: itemAdapter.ViewHolder, position: Int) {
         var imageResource = images[position] //リストを展開
         holder.image.setImageBitmap(imageResource)
+        holder.itemView.setOnClickListener{
+            listener?.invoke(position)      //追加
+        }
     }
 
     override fun getItemCount(): Int = images.size
