@@ -25,5 +25,20 @@
         <argument
             android:name="category"
             app:argType="string" />
+        <action
+            android:id="@+id/action_itemFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.filesystemtest.fragment.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <action
+            android:id="@+id/action_detailFragment_to_itemFragment"
+            app:destination="@id/itemFragment" />
+        <argument
+            android:name="name"
+            app:argType="string" />
     </fragment>
 </navigation>

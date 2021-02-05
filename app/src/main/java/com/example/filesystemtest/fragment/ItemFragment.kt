@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -57,14 +58,18 @@ class ItemFragment : Fragment() {
                 when {
                     resources.configuration.orientation
                             == Configuration.ORIENTATION_PORTRAIT
-                    ->GridLayoutManager(requireContext(),2)
+                    -> GridLayoutManager(requireContext(), 2)
                     else
-                    ->GridLayoutManager(requireContext(),4)
+                    -> GridLayoutManager(requireContext(), 4)
                 }
-            adapter = itemAdapter(context,imageList)
+            adapter = itemAdapter(context, imageList).apply{
+                //画面遷移
+                setOnItemClickListener { position:Int ->
+                    val action = items[position]?.let { ItemFragmentDirections.actionItemFragmentToDetailFragment( it.name) }
+                    if (action != null) { findNavController().navigate(action) }
+                }
+            }
         }
-
-        //リサイクラービューの選択
 
     }
 
