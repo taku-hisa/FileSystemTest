@@ -46,12 +46,13 @@ class ItemFragment : Fragment() {
         val category = args.category
         val items = realm.where<item>().equalTo("category", category).findAll()
         //画像の読込
-        val imageList = mutableListOf<Bitmap>()
+        val imageList = mutableListOf<Bitmap>() //bitmap型リストのインスタンスを作成します
+        var bufferedInputStream : BufferedInputStream;
         for(i in items){
-            val bufferedInputStream = BufferedInputStream(context?.openFileInput(i.name))
-            val itemImage = BitmapFactory.decodeStream(bufferedInputStream)
+            bufferedInputStream = BufferedInputStream(context?.openFileInput(i.name)) //"honyarara.jpg"という名前からbufferdInputStreamを取得します
+            val itemImage = BitmapFactory.decodeStream(bufferedInputStream) //bitmap型で取得します
             bufferedInputStream.close()
-            imageList.add(itemImage)
+            imageList.add(itemImage) //bitmap型のリストへ追加します
         }
         //アルゴリズムの修正が必要
         binding.RecyclerView.apply {
@@ -63,7 +64,7 @@ class ItemFragment : Fragment() {
                     else
                     -> GridLayoutManager(requireContext(), 4)
                 }
-            adapter = itemAdapter(context, imageList).apply{
+            adapter = itemAdapter(context, imageList).apply{ //adapterへlist<bitmap>を送ります
                 //画面遷移
                 setOnItemClickListener { position:Int ->
                     val action = items[position]?.let { ItemFragmentDirections.actionItemFragmentToDetailFragment( it.name) }
